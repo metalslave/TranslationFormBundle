@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "symfony/symfony": "^4.0"
+        "symfony/form": "^4.0"
     },
     "suggest": {
         "a2lix/i18n-doctrine-bundle": "For A2lix strategy",
