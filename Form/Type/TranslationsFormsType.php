@@ -2,15 +2,12 @@
 
 namespace A2lix\TranslationFormBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType,
-    Symfony\Component\Form\FormBuilderInterface,
-    Symfony\Component\OptionsResolver\OptionsResolver,
-    Symfony\Component\OptionsResolver\OptionsResolverInterface,
-    A2lix\TranslationFormBundle\Form\DataMapper\IndexByTranslationMapper;
+use A2lix\TranslationFormBundle\Form\DataMapper\IndexByTranslationMapper;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- *
- *
  * @author David ALLIX
  */
 class TranslationsFormsType extends AbstractType
@@ -19,9 +16,8 @@ class TranslationsFormsType extends AbstractType
     private $required;
 
     /**
-     *
-     * @param type $locales
-     * @param type $required
+     * @param $locales
+     * @param $required
      */
     public function __construct($locales, $required)
     {
@@ -33,20 +29,10 @@ class TranslationsFormsType extends AbstractType
     {
         $builder->setDataMapper(new IndexByTranslationMapper());
 
-        $formOptions = isset($options['form_options']) ? $options['form_options'] : array();
+        $formOptions = isset($options['form_options']) ? $options['form_options'] : [];
         foreach ($options['locales'] as $locale) {
             $builder->add($locale, $options['form_type'], $formOptions);
         }
-    }
-
-    /**
-     * BC for SF < 2.7
-     * 
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
     }
 
     /**
@@ -54,23 +40,13 @@ class TranslationsFormsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'by_reference' => false,
             'required' => $this->required,
             'locales' => $this->locales,
             'form_type' => null,
             'form_options' => null,
-        ));
-    }
-
-    /**
-     * BC for SF < 2.8
-     * 
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
+        ]);
     }
 
     /**

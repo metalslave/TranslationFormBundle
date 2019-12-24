@@ -2,11 +2,11 @@
 
 namespace A2lix\TranslationFormBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\Config\Definition\Processor,
-    Symfony\Component\Config\FileLocator,
-    Symfony\Component\HttpKernel\DependencyInjection\Extension,
-    Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * @author David ALLIX
@@ -14,9 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder,
 class A2lixTranslationFormExtension extends Extension
 {
     /**
-     *
-     * @param array $configs
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param array            $configs
+     * @param ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container)
     {

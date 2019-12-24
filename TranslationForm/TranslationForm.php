@@ -2,8 +2,8 @@
 
 namespace A2lix\TranslationFormBundle\TranslationForm;
 
-use Symfony\Component\Form\FormRegistry,
-    Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Form\FormRegistry;
 
 /**
  * @author David ALLIX
@@ -14,9 +14,8 @@ abstract class TranslationForm implements TranslationFormInterface
     private $managerRegistry;
 
     /**
-     *
-     * @param \Symfony\Component\Form\FormRegistry $formRegistry
-     * @param \Doctrine\Common\Persistence\ManagerRegistry $managerRegistry
+     * @param FormRegistry    $formRegistry
+     * @param ManagerRegistry $managerRegistry
      */
     public function __construct(FormRegistry $formRegistry, ManagerRegistry $managerRegistry)
     {
@@ -25,10 +24,9 @@ abstract class TranslationForm implements TranslationFormInterface
     }
 
     /**
-     *
-     * @return type
+     * @return ManagerRegistry
      */
-    public function getManagerRegistry()
+    public function getManagerRegistry(): ManagerRegistry
     {
         return $this->managerRegistry;
     }
@@ -38,7 +36,7 @@ abstract class TranslationForm implements TranslationFormInterface
      */
     public function getChildrenOptions($class, $options)
     {
-        $childrenOptions = array();
+        $childrenOptions = [];
 
         // Clean some options
         unset($options['inherit_data']);
@@ -46,7 +44,7 @@ abstract class TranslationForm implements TranslationFormInterface
 
         // Custom options by field
         foreach (array_unique(array_merge(array_keys($options['fields']), $this->getTranslatableFields($class))) as $child) {
-            $childOptions = (isset($options['fields'][$child]) ? $options['fields'][$child] : array()) + array('required' => $options['required']);
+            $childOptions = (isset($options['fields'][$child]) ? $options['fields'][$child] : []) + ['required' => $options['required']];
 
             if (!isset($childOptions['display']) || $childOptions['display']) {
                 $childOptions = $this->guessMissingChildOptions($this->typeGuesser, $class, $child, $childOptions);
@@ -57,13 +55,13 @@ abstract class TranslationForm implements TranslationFormInterface
                     unset($childOptions['locale_options']);
 
                     foreach ($options['locales'] as $locale) {
-                        $localeChildOptions = isset($localesChildOptions[$locale]) ? $localesChildOptions[$locale] : array();
+                        $localeChildOptions = isset($localesChildOptions[$locale]) ? $localesChildOptions[$locale] : [];
                         if (!isset($localeChildOptions['display']) || $localeChildOptions['display']) {
                             $childrenOptions[$locale][$child] = $localeChildOptions + $childOptions;
                         }
                     }
 
-                // General options for all locales
+                    // General options for all locales
                 } else {
                     foreach ($options['locales'] as $locale) {
                         $childrenOptions[$locale][$child] = $childOptions;

@@ -8,8 +8,8 @@ namespace A2lix\TranslationFormBundle\TranslationForm;
 class DefaultTranslationForm extends TranslationForm
 {
     /**
-     *
      * @param type $translationClass
+     *
      * @return type
      */
     protected function getTranslatableFields($translationClass)
@@ -18,9 +18,9 @@ class DefaultTranslationForm extends TranslationForm
         $manager = $this->getManagerRegistry()->getManagerForClass($translationClass);
         $metadataClass = $manager->getMetadataFactory()->getMetadataFor($translationClass);
 
-        $fields = array();
+        $fields = [];
         foreach ($metadataClass->fieldMappings as $fieldMapping) {
-            if (!in_array($fieldMapping['fieldName'], array('id', 'locale'))) {
+            if (!\in_array($fieldMapping['fieldName'], ['id', 'locale'])) {
                 $fields[] = $fieldMapping['fieldName'];
             }
         }

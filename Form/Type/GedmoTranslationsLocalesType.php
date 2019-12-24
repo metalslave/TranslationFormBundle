@@ -2,20 +2,23 @@
 
 namespace A2lix\TranslationFormBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType,
-    Symfony\Component\Form\FormBuilderInterface,
-    Symfony\Component\OptionsResolver\OptionsResolver,
-    Symfony\Component\OptionsResolver\OptionsResolverInterface,
-    A2lix\TranslationFormBundle\Form\DataMapper\GedmoTranslationMapper;
+use A2lix\TranslationFormBundle\Form\DataMapper\GedmoTranslationMapper;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Translations locales (gedmo)
+ * Translations locales (gedmo).
  *
  * @author David ALLIX
  */
 class GedmoTranslationsLocalesType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isDefaultTranslation = ('defaultLocale' === $builder->getName());
 
@@ -26,23 +29,13 @@ class GedmoTranslationsLocalesType extends AbstractType
 
         foreach ($options['locales'] as $locale) {
             if (isset($options['fields_options'][$locale])) {
-                $builder->add($locale, 'a2lix_translationsFields', array(
+                $builder->add($locale, TranslationsFieldsType::class, [
                     'fields' => $options['fields_options'][$locale],
                     'translation_class' => $options['translation_class'],
                     'inherit_data' => $isDefaultTranslation,
-                ));
+                ]);
             }
         }
-    }
-
-    /**
-     * BC for SF < 2.7
-     * 
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
     }
 
     /**
@@ -50,15 +43,15 @@ class GedmoTranslationsLocalesType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'locales' => array(),
-            'fields_options' => array(),
-            'translation_class' => null
-        ));
+        $resolver->setDefaults([
+            'locales' => [],
+            'fields_options' => [],
+            'translation_class' => null,
+        ]);
     }
 
     /**
-     * BC for SF < 2.8
+     * BC for SF < 2.8.
      *
      * {@inheritdoc}
      */

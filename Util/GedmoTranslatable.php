@@ -17,6 +17,7 @@ trait GedmoTranslatable
     public function setTranslations(\Doctrine\Common\Collections\ArrayCollection $translations)
     {
         $this->translations = $translations;
+
         return $this;
     }
 
@@ -24,6 +25,7 @@ trait GedmoTranslatable
     {
         $translation->setObject($this);
         $this->translations[] = $translation;
+
         return $this;
     }
 

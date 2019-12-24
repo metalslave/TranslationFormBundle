@@ -2,10 +2,10 @@
 
 namespace A2lix\TranslationFormBundle\EventListener;
 
-use Doctrine\Common\Annotations\Reader,
-    Gedmo\Translatable\TranslatableListener,
-    Symfony\Component\HttpKernel\Event\FilterControllerEvent,
-    Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Annotations\Reader;
+use Gedmo\Translatable\TranslatableListener;
+use Doctrine\Common\Util\ClassUtils;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 class ControllerListener
 {
@@ -18,7 +18,7 @@ class ControllerListener
         $this->translatableListener = $translatableListener;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(ControllerEvent $event)
     {
         $controller = $event->getController();
         list($object, $method) = $controller;

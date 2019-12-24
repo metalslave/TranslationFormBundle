@@ -2,9 +2,9 @@
 
 namespace A2lix\TranslationFormBundle\Form\DataMapper;
 
-use Symfony\Component\Form\DataMapperInterface,
-    Symfony\Component\Form\Exception\UnexpectedTypeException,
-    Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\DataMapperInterface;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
 /**
  * @author David ALLIX
@@ -16,18 +16,18 @@ class GedmoTranslationMapper implements DataMapperInterface
      */
     public function mapDataToForms($data, $forms)
     {
-        if (null === $data || array() === $data) {
+        if (null === $data || [] === $data) {
             return;
         }
 
-        if (!is_array($data) && !is_object($data)) {
+        if (!\is_array($data) && !\is_object($data)) {
             throw new UnexpectedTypeException($data, 'object, array or empty');
         }
 
         foreach ($forms as $translationsFieldsForm) {
             $locale = $translationsFieldsForm->getConfig()->getName();
 
-            $tmpFormData = array();
+            $tmpFormData = [];
             foreach ($data as $translation) {
                 if ($locale === $translation->getLocale()) {
                     $tmpFormData[$translation->getField()] = $translation->getContent();
@@ -46,7 +46,7 @@ class GedmoTranslationMapper implements DataMapperInterface
             return;
         }
 
-        if (!is_array($data) && !is_object($data)) {
+        if (!\is_array($data) && !\is_object($data)) {
             throw new UnexpectedTypeException($data, 'object, array or empty');
         }
 
@@ -58,14 +58,13 @@ class GedmoTranslationMapper implements DataMapperInterface
             $translationClass = $translationsFieldsConfig->getOption('translation_class');
 
             foreach ($translationsFieldsForm->getData() as $field => $content) {
-                $existingTranslation = $data ? $data->filter(function($object) use ($locale, $field) {
-                    return ($object && ($object->getLocale() === $locale) && ($object->getField() === $field));
+                $existingTranslation = $data ? $data->filter(function ($object) use ($locale, $field) {
+                    return $object && ($object->getLocale() === $locale) && ($object->getField() === $field);
                 })->first() : null;
 
                 if ($existingTranslation) {
                     $existingTranslation->setContent($content);
                     $newData->add($existingTranslation);
-
                 } else {
                     $translation = new $translationClass();
                     $translation->setLocale($locale);

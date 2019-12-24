@@ -2,15 +2,14 @@
 
 namespace A2lix\TranslationFormBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType,
-    Symfony\Component\Form\FormBuilderInterface,
-    Symfony\Component\OptionsResolver\OptionsResolver,
-    Symfony\Component\OptionsResolver\OptionsResolverInterface,
-    A2lix\TranslationFormBundle\Form\EventListener\DefaultTranslationsListener,
-    A2lix\TranslationFormBundle\Form\DataMapper\IndexByTranslationMapper;
+use A2lix\TranslationFormBundle\Form\DataMapper\IndexByTranslationMapper;
+use A2lix\TranslationFormBundle\Form\EventListener\DefaultTranslationsListener;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Regroup by locales, all translations fields
+ * Regroup by locales, all translations fields.
  *
  * @author David ALLIX
  */
@@ -21,10 +20,9 @@ class TranslationsType extends AbstractType
     private $required;
 
     /**
-     *
-     * @param \A2lix\TranslationFormBundle\Form\EventListener\DefaultTranslationsListener $translationsListener
-     * @param type $locales
-     * @param type $required
+     * @param DefaultTranslationsListener $translationsListener
+     * @param $locales
+     * @param $required
      */
     public function __construct(DefaultTranslationsListener $translationsListener, $locales, $required)
     {
@@ -40,36 +38,16 @@ class TranslationsType extends AbstractType
     }
 
     /**
-     * BC for SF < 2.7
-     * 
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'by_reference' => false,
             'required' => $this->required,
             'locales' => $this->locales,
-            'fields' => array(),
-        ));
-    }
-
-    /**
-     * BC for SF < 2.8
-     * 
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
+            'fields' => [],
+        ]);
     }
 
     /**

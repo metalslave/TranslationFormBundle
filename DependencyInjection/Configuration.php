@@ -2,8 +2,8 @@
 
 namespace A2lix\TranslationFormBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder,
-    Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * @author David ALLIX
@@ -11,7 +11,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder,
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -23,14 +23,14 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('locales')
                     ->beforeNormalization()
                         ->ifString()
-                        ->then(function($v) { return preg_split('/\s*,\s*/', $v); })
+                        ->then(function ($v) { return preg_split('/\s*,\s*/', $v); })
                     ->end()
                     ->requiresAtLeastOneElement()
                     ->prototype('scalar')->end()
                 ->end()
                 ->booleanNode('default_required')->defaultTrue()->end()
                 ->scalarNode('manager_registry')->defaultValue('doctrine')->end()
-                ->scalarNode('templating')->defaultValue("A2lixTranslationFormBundle::default.html.twig")->end()
+                ->scalarNode('templating')->defaultValue('A2lixTranslationFormBundle::default.html.twig')->end()
             ->end()
         ;
 

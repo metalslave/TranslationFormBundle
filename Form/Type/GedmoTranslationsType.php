@@ -2,19 +2,18 @@
 
 namespace A2lix\TranslationFormBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType,
-    Symfony\Component\Form\FormBuilderInterface,
-    Symfony\Component\OptionsResolver\OptionsResolver,
-    Symfony\Component\OptionsResolver\OptionsResolverInterface,
-    A2lix\TranslationFormBundle\Form\EventListener\GedmoTranslationsListener,
-    A2lix\TranslationFormBundle\TranslationForm\GedmoTranslationForm,
-    A2lix\TranslationFormBundle\Form\DataMapper\GedmoTranslationMapper,
-    Symfony\Component\Form\FormView,
-    Symfony\Component\Form\FormInterface,
-    Symfony\Component\OptionsResolver\Options;
+use A2lix\TranslationFormBundle\Form\DataMapper\GedmoTranslationMapper;
+use A2lix\TranslationFormBundle\Form\EventListener\GedmoTranslationsListener;
+use A2lix\TranslationFormBundle\TranslationForm\GedmoTranslationForm;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Regroup by locales, all translations fields (gedmo)
+ * Regroup by locales, all translations fields (gedmo).
  *
  * @author David ALLIX
  */
@@ -26,11 +25,10 @@ class GedmoTranslationsType extends AbstractType
     private $required;
 
     /**
-     *
-     * @param \A2lix\TranslationFormBundle\Form\EventListener\GedmoTranslationsListener $translationsListener
-     * @param \A2lix\TranslationFormBundle\TranslationForm\GedmoTranslationForm $translationForm
-     * @param type $locales
-     * @param type $required
+     * @param GedmoTranslationsListener $translationsListener
+     * @param GedmoTranslationForm      $translationForm
+     * @param $locales
+     * @param $required
      */
     public function __construct(GedmoTranslationsListener $translationsListener, GedmoTranslationForm $translationForm, $locales, $required)
     {
@@ -40,33 +38,49 @@ class GedmoTranslationsType extends AbstractType
         $this->required = $required;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     *
+     * @throws \Exception
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Simple way is enough
         if (!$options['inherit_data']) {
             $builder->setDataMapper(new GedmoTranslationMapper());
             $builder->addEventSubscriber($this->translationsListener);
-
         } else {
             if (!$options['translatable_class']) {
                 throw new \Exception("If you want include the default locale with translations locales, you need to fill the 'translatable_class' option");
             }
 
             $childrenOptions = $this->translationForm->getChildrenOptions($options['translatable_class'], $options);
+            foreach ($childrenOptions as $keyLang => $lang) {
+                foreach ($lang as $keyItem => $item) {
+                    foreach ($item as $field => $value) {
+                        if (\in_array($field, ['max_length', 'pattern'], true)) {
+                            unset($item[$field]);
+                            $item['attr'][$field] = $value;
+                            $childrenOptions[$keyLang][$keyItem] = $item;
+                        }
+                    }
+                }
+            }
             $defaultLocale = (array) $this->translationForm->getGedmoTranslatableListener()->getDefaultLocale();
 
-            $builder->add('defaultLocale', 'a2lix_translationsLocales_gedmo', array(
+            $builder->add('defaultLocale', GedmoTranslationsLocalesType::class, [
                 'locales' => $defaultLocale,
                 'fields_options' => $childrenOptions,
                 'inherit_data' => true,
-            ));
+            ]);
 
-            $builder->add($builder->getName(), 'a2lix_translationsLocales_gedmo', array(
+            $builder->add($builder->getName(), GedmoTranslationsLocalesType::class, [
                 'locales' => array_diff($options['locales'], $defaultLocale),
                 'fields_options' => $childrenOptions,
                 'inherit_data' => false,
-                'translation_class' => $this->translationForm->getTranslationClass($options['translatable_class'])
-            ));
+                'translation_class' => $this->translationForm->getTranslationClass($options['translatable_class']),
+            ]);
         }
     }
 
@@ -76,44 +90,24 @@ class GedmoTranslationsType extends AbstractType
     }
 
     /**
-     * BC for SF < 2.7
-     * 
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $translatableListener = $this->translationForm->getGedmoTranslatableListener();
 
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'required' => $this->required,
             'locales' => $this->locales,
-            'fields' => array(),
+            'fields' => [],
             'translatable_class' => null,
 
             // inherit_data is needed only if there is no persist of default locale and default locale is required to display
-            'inherit_data' => function(Options $options) use ($translatableListener) {
-                return (!$translatableListener->getPersistDefaultLocaleTranslation()
-                    && (in_array($translatableListener->getDefaultLocale(), $options['locales'])));
+            'inherit_data' => function (Options $options) use ($translatableListener) {
+                return !$translatableListener->getPersistDefaultLocaleTranslation()
+                    && (\in_array($translatableListener->getDefaultLocale(), $options['locales']));
             },
-        ));
-    }
-
-    /**
-     * BC for SF < 2.8
-     *
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
+        ]);
     }
 
     /**

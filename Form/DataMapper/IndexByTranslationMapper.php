@@ -2,9 +2,9 @@
 
 namespace A2lix\TranslationFormBundle\Form\DataMapper;
 
-use Symfony\Component\Form\DataMapperInterface,
-    Symfony\Component\Form\Exception\UnexpectedTypeException,
-    Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\DataMapperInterface;
+use Symfony\Component\Form\Exception\UnexpectedTypeException;
 
 /**
  * @author David ALLIX
@@ -16,11 +16,11 @@ class IndexByTranslationMapper implements DataMapperInterface
      */
     public function mapDataToForms($data, $forms)
     {
-        if (null === $data || array() === $data) {
+        if (null === $data || [] === $data) {
             return;
         }
 
-        if (!is_array($data) && !is_object($data)) {
+        if (!\is_array($data) && !\is_object($data)) {
             throw new UnexpectedTypeException($data, 'object, array or empty');
         }
 
@@ -38,14 +38,14 @@ class IndexByTranslationMapper implements DataMapperInterface
             return;
         }
 
-        if (!is_array($data) && !is_object($data)) {
+        if (!\is_array($data) && !\is_object($data)) {
             throw new UnexpectedTypeException($data, 'object, array or empty');
         }
 
         $data = $data ?: new ArrayCollection();
 
         foreach ($forms as $form) {
-            if (is_object($translation = $form->getData()) && !$translation->getId()) {
+            if (\is_object($translation = $form->getData()) && !$translation->getId()) {
                 $locale = $form->getConfig()->getName();
                 $translation->setLocale($locale);
 

@@ -13,17 +13,15 @@ class GedmoTranslationForm extends TranslationForm
     private $gedmoConfig;
 
     /**
-     *
-     * @return type
+     * @return TranslatableListener
      */
-    public function getGedmoTranslatableListener()
+    public function getGedmoTranslatableListener(): TranslatableListener
     {
         return $this->gedmoTranslatableListener;
     }
 
     /**
-     *
-     * @param \Gedmo\Translatable\TranslatableListener $gedmoTranslatableListener
+     * @param TranslatableListener $gedmoTranslatableListener
      */
     public function setGedmoTranslatableListener(TranslatableListener $gedmoTranslatableListener)
     {
@@ -31,8 +29,8 @@ class GedmoTranslationForm extends TranslationForm
     }
 
     /**
-     *
      * @param type $translatableClass
+     *
      * @return type
      */
     private function getGedmoConfig($translatableClass)
@@ -54,17 +52,19 @@ class GedmoTranslationForm extends TranslationForm
     public function getTranslationClass($translatableClass)
     {
         $gedmoConfig = $this->getGedmoConfig($translatableClass);
+
         return $gedmoConfig['translationClass'];
     }
 
     /**
-     *
      * @param type $translatableClass
+     *
      * @return type
      */
     protected function getTranslatableFields($translatableClass)
     {
         $gedmoConfig = $this->getGedmoConfig($translatableClass);
-        return isset($gedmoConfig['fields']) ? $gedmoConfig['fields'] : array();
+
+        return isset($gedmoConfig['fields']) ? $gedmoConfig['fields'] : [];
     }
 }

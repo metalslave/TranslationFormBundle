@@ -2,13 +2,12 @@
 
 namespace A2lix\TranslationFormBundle\Form\EventListener;
 
-use Symfony\Component\Form\FormEvent,
-    Symfony\Component\Form\FormEvents,
-    Symfony\Component\EventDispatcher\EventSubscriberInterface,
-    A2lix\TranslationFormBundle\TranslationForm\TranslationForm;
+use A2lix\TranslationFormBundle\TranslationForm\TranslationForm;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
- *
  * @author David ALLIX
  */
 class DefaultTranslationsListener implements EventSubscriberInterface
@@ -16,7 +15,6 @@ class DefaultTranslationsListener implements EventSubscriberInterface
     private $translationForm;
 
     /**
-     *
      * @param \A2lix\TranslationFormBundle\TranslationForm\TranslationForm $translationForm
      */
     public function __construct(TranslationForm $translationForm)
@@ -26,13 +24,12 @@ class DefaultTranslationsListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FormEvents::PRE_SET_DATA => 'preSetData',
-        );
+        ];
     }
 
     /**
-     *
      * @param \Symfony\Component\Form\FormEvent $event
      */
     public function preSetData(FormEvent $event)
@@ -47,10 +44,10 @@ class DefaultTranslationsListener implements EventSubscriberInterface
 
         foreach ($formOptions['locales'] as $locale) {
             if (isset($childrenOptions[$locale])) {
-                $form->add($locale, 'a2lix_translationsFields', array(
+                $form->add($locale, 'a2lix_translationsFields', [
                     'data_class' => $translationClass,
-                    'fields' => $childrenOptions[$locale]
-                ));
+                    'fields' => $childrenOptions[$locale],
+                ]);
             }
         }
     }

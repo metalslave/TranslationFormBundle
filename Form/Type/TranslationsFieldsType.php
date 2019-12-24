@@ -2,13 +2,12 @@
 
 namespace A2lix\TranslationFormBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType,
-    Symfony\Component\Form\FormBuilderInterface,
-    Symfony\Component\OptionsResolver\OptionsResolver,
-    Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Translations fields
+ * Translations fields.
  *
  * @author David ALLIX
  */
@@ -25,34 +24,14 @@ class TranslationsFieldsType extends AbstractType
     }
 
     /**
-     * BC for SF < 2.7
-     * 
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $this->configureOptions($resolver);
-    }
-
-    /**
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'fields' => array(),
-            'translation_class' => null
-        ));
-    }
-
-    /**
-     * BC for SF < 2.8
-     * 
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
+        $resolver->setDefaults([
+            'fields' => [],
+            'translation_class' => null,
+        ]);
     }
 
     /**
